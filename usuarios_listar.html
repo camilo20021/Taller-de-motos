@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block titulo %}Usuarios · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>Usuarios</h1>
+    <div class="subtexto">Cuentas de acceso al sistema (administradores y mecánicos)</div>
+  </div>
+  <a href="{{ url_for('usuarios.nuevo') }}" class="btn btn-primario">+ Nueva cuenta</a>
+</div>
+
+<div class="tarjeta">
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in usuarios %}
+        <tr>
+          <td>{{ u.nombre }}</td>
+          <td>{{ u.correo }}</td>
+          <td>{{ 'Administrador' if u.es_admin else 'Mecánico' }}</td>
+          <td>
+            {% if u.activo %}
+            <span class="badge badge-terminado">Activo</span>
+            {% else %}
+            <span class="badge badge-cancelado">Inactivo</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if u.id != current_user.id %}
+            <form method="POST" action="{{ url_for('usuarios.cambiar_estado', usuario_id=u.id) }}"
+                  data-confirmar="¿{{ 'Desactivar' if u.activo else 'Activar' }} la cuenta de {{ u.nombre }}?">
+              <button type="submit" class="btn btn-sm btn-secundario">{{ 'Desactivar' if u.activo else 'Activar' }}</button>
+            </form>
+            {% else %}
+            <span class="subtexto">Tu cuenta</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="vacio">No hay usuarios registrados todavía.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

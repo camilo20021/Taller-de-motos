@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/tmp/**)",
+      "Bash(curl -s -c cookies.txt -b cookies.txt -o /dev/null -w '%{http_code}\\\\n' __TRACKED_VAR__/ordenes/nueva --data-urlencode moto_id=1 --data-urlencode kilometraje_ingreso=15000 --data-urlencode fecha_entrega_estimada=2026-07-10 --data-urlencode 'problema_reportado=Ruido en el motor y no frena bien')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}\\\\n' -b cookies.txt __TRACKED_VAR__/ordenes/1)",
+      "Bash(nslookup supabase.com)",
+      "Bash(nslookup db.wbklshybclhtyuvrsqkh.supabase.co)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"login=%{http_code}\\\\n\" http://127.0.0.1:5000/login)"
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Editar moto' if moto else 'Nueva moto' }} · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>{{ 'Editar moto' if moto else 'Nueva moto' }}</h1>
+    <div class="subtexto">Propietario: {{ cliente.nombre }} (cédula {{ cliente.cedula }})</div>
+  </div>
+</div>
+
+<div class="tarjeta" style="max-width:640px;">
+  <form method="POST">
+    <div class="form-grid">
+      <div class="campo">
+        <label for="placa">Placa *</label>
+        <input type="text" id="placa" name="placa" value="{{ moto.placa if moto else '' }}" required style="text-transform:uppercase;">
+      </div>
+      <div class="campo">
+        <label for="marca">Marca *</label>
+        <input type="text" id="marca" name="marca" value="{{ moto.marca if moto else '' }}" required>
+      </div>
+      <div class="campo">
+        <label for="modelo">Modelo</label>
+        <input type="text" id="modelo" name="modelo" value="{{ moto.modelo if moto else '' }}">
+      </div>
+      <div class="campo">
+        <label for="anio">Año</label>
+        <input type="number" id="anio" name="anio" min="1950" max="2100" value="{{ moto.anio if moto else '' }}">
+      </div>
+      <div class="campo">
+        <label for="color">Color</label>
+        <input type="text" id="color" name="color" value="{{ moto.color if moto else '' }}">
+      </div>
+      <div class="campo">
+        <label for="cilindraje">Cilindraje</label>
+        <input type="text" id="cilindraje" name="cilindraje" placeholder="Ej: 150cc" value="{{ moto.cilindraje if moto else '' }}">
+      </div>
+      <div class="campo">
+        <label for="kilometraje">Kilometraje</label>
+        <input type="number" id="kilometraje" name="kilometraje" min="0" value="{{ moto.kilometraje if moto else '' }}">
+      </div>
+    </div>
+
+    <div class="acciones-form">
+      <button type="submit" class="btn btn-primario">Guardar</button>
+      <a href="{{ url_for('clientes.detalle', cliente_id=cliente.id) }}" class="btn btn-secundario">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

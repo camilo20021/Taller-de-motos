@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block titulo %}Inventario · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>Inventario de repuestos</h1>
+    <div class="subtexto">Control de stock, entradas y salidas</div>
+  </div>
+  <a href="{{ url_for('inventario.nuevo') }}" class="btn btn-primario">+ Nuevo repuesto</a>
+</div>
+
+<form class="busqueda-inline" method="GET">
+  <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre o código...">
+  <button type="submit" class="btn btn-secundario">Buscar</button>
+</form>
+
+<div class="tarjeta">
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Stock</th>
+          <th>Stock mín.</th>
+          <th>Precio venta</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in repuestos %}
+        <tr>
+          <td>{{ r.codigo or '—' }}</td>
+          <td>{{ r.nombre }}</td>
+          <td>{{ r.categoria or '—' }}</td>
+          <td>{{ r.stock }}{% if r.stock_bajo %} <span class="badge badge-esperando_repuesto">bajo</span>{% endif %}</td>
+          <td>{{ r.stock_minimo }}</td>
+          <td>${{ '{:,.0f}'.format(r.precio_venta) }}</td>
+          <td><a href="{{ url_for('inventario.editar', repuesto_id=r.id) }}">Editar</a></td>
+          <td>
+            <form method="POST" action="{{ url_for('inventario.registrar_movimiento', repuesto_id=r.id) }}" style="display:flex; gap:4px;">
+              <select name="tipo" style="padding:4px 6px; font-size:0.78rem;">
+                <option value="entrada">Entrada</option>
+                <option value="salida">Salida</option>
+              </select>
+              <input type="number" name="cantidad" min="1" required placeholder="Cant." style="width:70px; padding:4px 6px; font-size:0.78rem;">
+              <button type="submit" class="btn btn-sm btn-secundario">Aplicar</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="vacio">No hay repuestos registrados todavía.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

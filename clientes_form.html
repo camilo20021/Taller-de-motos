@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Editar cliente' if cliente else 'Nuevo cliente' }} · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>{{ 'Editar cliente' if cliente else 'Nuevo cliente' }}</h1>
+    <div class="subtexto">Datos personales del cliente para registrar sus motos y órdenes de servicio.</div>
+  </div>
+</div>
+
+<div class="tarjeta" style="max-width:640px;">
+  <form method="POST">
+    <div class="form-grid">
+      <div class="campo">
+        <label for="nombre">Nombre completo *</label>
+        <input type="text" id="nombre" name="nombre" value="{{ cliente.nombre if cliente else '' }}" required>
+      </div>
+      <div class="campo">
+        <label for="cedula">Cédula *</label>
+        <input type="text" id="cedula" name="cedula" value="{{ cliente.cedula if cliente else '' }}" required>
+      </div>
+      <div class="campo">
+        <label for="celular">Celular *</label>
+        <input type="tel" id="celular" name="celular" value="{{ cliente.celular if cliente else '' }}" required>
+      </div>
+      <div class="campo">
+        <label for="correo">Correo</label>
+        <input type="email" id="correo" name="correo" value="{{ cliente.correo if cliente else '' }}">
+        <span class="ayuda">Se usará para avisarle cuando su moto esté lista.</span>
+      </div>
+      <div class="campo ancho-completo">
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" name="direccion" value="{{ cliente.direccion if cliente else '' }}">
+      </div>
+    </div>
+
+    <div class="acciones-form">
+      <button type="submit" class="btn btn-primario">Guardar</button>
+      <a href="{{ url_for('clientes.detalle', cliente_id=cliente.id) if cliente else url_for('clientes.listar') }}" class="btn btn-secundario">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block titulo %}{{ cliente.nombre }} · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>{{ cliente.nombre }}</h1>
+    <div class="subtexto">Cédula {{ cliente.cedula }} · {{ cliente.celular }}{% if cliente.correo %} · {{ cliente.correo }}{% endif %}</div>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <a href="{{ url_for('clientes.editar', cliente_id=cliente.id) }}" class="btn btn-secundario">Editar datos</a>
+    <a href="{{ url_for('clientes.nueva_moto', cliente_id=cliente.id) }}" class="btn btn-primario">+ Nueva moto</a>
+  </div>
+</div>
+
+<div class="tarjeta">
+  <h2>Motos de este cliente</h2>
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Placa</th>
+          <th>Marca</th>
+          <th>Modelo</th>
+          <th>Año</th>
+          <th>Color</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for moto in cliente.motos %}
+        <tr>
+          <td>{{ moto.placa }}</td>
+          <td>{{ moto.marca }}</td>
+          <td>{{ moto.modelo or '—' }}</td>
+          <td>{{ moto.anio or '—' }}</td>
+          <td>{{ moto.color or '—' }}</td>
+          <td>
+            <a href="{{ url_for('clientes.editar_moto', moto_id=moto.id) }}">Editar</a>
+            &middot;
+            <a href="{{ url_for('ordenes.nueva', cliente_id=cliente.id) }}">Nueva orden</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="vacio">Este cliente aún no tiene motos registradas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="tarjeta">
+  <form method="POST" action="{{ url_for('clientes.eliminar', cliente_id=cliente.id) }}"
+        data-confirmar="¿Eliminar este cliente? Esta acción no se puede deshacer.">
+    <button type="submit" class="btn btn-peligro btn-sm">Eliminar cliente</button>
+  </form>
+</div>
+
+{% endblock %}

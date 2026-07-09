@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block titulo %}Cierre de caja · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>Cierre de caja</h1>
+    <div class="subtexto">Controla el efectivo del taller para que no se descuadre</div>
+  </div>
+</div>
+
+{% if caja_abierta %}
+<div class="tarjeta">
+  <h2>Caja abierta</h2>
+  <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px,1fr));">
+    <div><strong>Abierta por:</strong><br>{{ caja_abierta.abierto_por.nombre }}</div>
+    <div><strong>Fecha de apertura:</strong><br>{{ caja_abierta.fecha_apertura.strftime('%d/%m/%Y %H:%M') }}</div>
+    <div><strong>Base inicial:</strong><br>${{ '{:,.0f}'.format(caja_abierta.monto_inicial) }}</div>
+    <div><strong>Ventas registradas:</strong><br>${{ '{:,.0f}'.format(caja_abierta.total_ventas) }}</div>
+    <div><strong>Efectivo esperado:</strong><br>${{ '{:,.0f}'.format(caja_abierta.monto_esperado) }}</div>
+  </div>
+
+  <div class="separador-seccion">Cerrar caja</div>
+  <form method="POST" action="{{ url_for('caja.cerrar', caja_id=caja_abierta.id) }}" data-confirmar="¿Cerrar la caja con el efectivo contado?">
+    <div class="form-grid">
+      <div class="campo">
+        <label for="monto_contado">Efectivo contado *</label>
+        <input type="number" id="monto_contado" name="monto_contado" min="0" step="100" required>
+        <span class="ayuda">Cuenta el dinero físico en caja y ponlo aquí.</span>
+      </div>
+      <div class="campo ancho-completo">
+        <label for="observaciones">Observaciones</label>
+        <textarea id="observaciones" name="observaciones" placeholder="Ej: faltante por vuelto no registrado, gasto de caja menor..."></textarea>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primario">Cerrar caja</button>
+  </form>
+</div>
+
+{% else %}
+<div class="tarjeta" style="max-width:480px;">
+  <h2>No hay caja abierta</h2>
+  <p class="subtexto">Abre la caja al iniciar el turno con el efectivo base con el que arrancas.</p>
+  <form method="POST" action="{{ url_for('caja.abrir') }}">
+    <div class="campo">
+      <label for="monto_inicial">Base inicial de caja *</label>
+      <input type="number" id="monto_inicial" name="monto_inicial" min="0" step="100" value="0" required>
+    </div>
+    <button type="submit" class="btn btn-primario">Abrir caja</button>
+  </form>
+</div>
+{% endif %}
+
+<div class="tarjeta">
+  <h2>Historial de cierres</h2>
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Apertura</th>
+          <th>Cierre</th>
+          <th>Base inicial</th>
+          <th>Ventas</th>
+          <th>Esperado</th>
+          <th>Contado</th>
+          <th>Diferencia</th>
+          <th>Cerrada por</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in historial %}
+        <tr>
+          <td>{{ c.fecha_apertura.strftime('%d/%m/%Y %H:%M') }}</td>
+          <td>{{ c.fecha_cierre.strftime('%d/%m/%Y %H:%M') }}</td>
+          <td>${{ '{:,.0f}'.format(c.monto_inicial) }}</td>
+          <td>${{ '{:,.0f}'.format(c.total_ventas) }}</td>
+          <td>${{ '{:,.0f}'.format(c.monto_esperado) }}</td>
+          <td>${{ '{:,.0f}'.format(c.monto_contado) }}</td>
+          <td>
+            {% if c.diferencia == 0 %}
+            <span class="badge badge-terminado">Cuadrada</span>
+            {% elif c.diferencia > 0 %}
+            <span class="badge badge-esperando_repuesto">Sobrante ${{ '{:,.0f}'.format(c.diferencia) }}</span>
+            {% else %}
+            <span class="badge badge-cancelado">Faltante ${{ '{:,.0f}'.format(c.diferencia|abs) }}</span>
+            {% endif %}
+          </td>
+          <td>{{ c.cerrado_por.nombre if c.cerrado_por else '—' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="vacio">Aún no hay cierres de caja registrados.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

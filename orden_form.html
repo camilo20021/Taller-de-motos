@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block titulo %}Nueva orden de servicio · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>Nueva orden de servicio</h1>
+    <div class="subtexto">Registra el ingreso de una moto al taller</div>
+  </div>
+</div>
+
+{% if not cliente %}
+<div class="tarjeta" style="max-width:560px;">
+  <h2>1. Busca al cliente</h2>
+  <form method="GET" action="{{ url_for('ordenes.buscar_cliente') }}" class="busqueda-inline">
+    <input type="text" name="cedula" placeholder="Cédula del cliente" required autofocus>
+    <button type="submit" class="btn btn-primario">Buscar</button>
+  </form>
+  <p class="subtexto">¿Cliente nuevo? <a href="{{ url_for('clientes.nuevo') }}">Regístralo primero</a>.</p>
+</div>
+
+{% else %}
+
+<div class="tarjeta" style="max-width:640px;">
+  <h2>Cliente: {{ cliente.nombre }}</h2>
+  <p class="subtexto">Cédula {{ cliente.cedula }} · {{ cliente.celular }}</p>
+
+  {% if not cliente.motos %}
+  <p>Este cliente aún no tiene motos registradas.
+    <a href="{{ url_for('clientes.nueva_moto', cliente_id=cliente.id) }}">Registrar una moto</a>
+  </p>
+  {% else %}
+  <form method="POST">
+    <div class="form-grid">
+      <div class="campo ancho-completo">
+        <label for="moto_id">Moto *</label>
+        <select id="moto_id" name="moto_id" required>
+          <option value="">Selecciona una moto...</option>
+          {% for moto in cliente.motos %}
+          <option value="{{ moto.id }}">{{ moto.marca }} {{ moto.modelo or '' }} — placa {{ moto.placa }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="campo">
+        <label for="mecanico_id">Mecánico asignado</label>
+        <select id="mecanico_id" name="mecanico_id">
+          <option value="">Sin asignar</option>
+          {% for m in mecanicos %}
+          <option value="{{ m.id }}">{{ m.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="campo">
+        <label for="kilometraje_ingreso">Kilometraje de ingreso</label>
+        <input type="number" id="kilometraje_ingreso" name="kilometraje_ingreso" min="0">
+      </div>
+      <div class="campo">
+        <label for="fecha_entrega_estimada">Fecha de entrega estimada</label>
+        <input type="date" id="fecha_entrega_estimada" name="fecha_entrega_estimada">
+      </div>
+      <div class="campo ancho-completo">
+        <label for="problema_reportado">Problema reportado por el cliente</label>
+        <textarea id="problema_reportado" name="problema_reportado" placeholder="Ej: ruido en el motor, no enciende, cambio de aceite..."></textarea>
+      </div>
+    </div>
+
+    <div class="acciones-form">
+      <button type="submit" class="btn btn-primario">Registrar ingreso de la moto</button>
+      <a href="{{ url_for('ordenes.nueva') }}" class="btn btn-secundario">Buscar otro cliente</a>
+    </div>
+  </form>
+  {% endif %}
+</div>
+
+{% endif %}
+
+{% endblock %}

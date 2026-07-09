@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Editar repuesto' if repuesto else 'Nuevo repuesto' }} · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>{{ 'Editar repuesto' if repuesto else 'Nuevo repuesto' }}</h1>
+  </div>
+</div>
+
+<div class="tarjeta" style="max-width:640px;">
+  <form method="POST">
+    <div class="form-grid">
+      <div class="campo">
+        <label for="codigo">Código</label>
+        <input type="text" id="codigo" name="codigo" value="{{ repuesto.codigo if repuesto else '' }}">
+      </div>
+      <div class="campo">
+        <label for="nombre">Nombre *</label>
+        <input type="text" id="nombre" name="nombre" value="{{ repuesto.nombre if repuesto else '' }}" required>
+      </div>
+      <div class="campo">
+        <label for="categoria">Categoría</label>
+        <input type="text" id="categoria" name="categoria" placeholder="Ej: frenos, motor, eléctrico" value="{{ repuesto.categoria if repuesto else '' }}">
+      </div>
+      <div class="campo">
+        <label for="proveedor">Proveedor</label>
+        <input type="text" id="proveedor" name="proveedor" value="{{ repuesto.proveedor if repuesto else '' }}">
+      </div>
+      {% if not repuesto %}
+      <div class="campo">
+        <label for="stock">Stock inicial</label>
+        <input type="number" id="stock" name="stock" min="0" value="0">
+      </div>
+      {% endif %}
+      <div class="campo">
+        <label for="stock_minimo">Stock mínimo</label>
+        <input type="number" id="stock_minimo" name="stock_minimo" min="0" value="{{ repuesto.stock_minimo if repuesto else 0 }}">
+        <span class="ayuda">Cuando el stock llegue a este número, aparecerá en las alertas del panel.</span>
+      </div>
+      <div class="campo">
+        <label for="precio_compra">Precio de compra</label>
+        <input type="number" id="precio_compra" name="precio_compra" min="0" step="100" value="{{ repuesto.precio_compra if repuesto else 0 }}">
+      </div>
+      <div class="campo">
+        <label for="precio_venta">Precio de venta</label>
+        <input type="number" id="precio_venta" name="precio_venta" min="0" step="100" value="{{ repuesto.precio_venta if repuesto else 0 }}">
+      </div>
+    </div>
+
+    <div class="acciones-form">
+      <button type="submit" class="btn btn-primario">Guardar</button>
+      <a href="{{ url_for('inventario.listar') }}" class="btn btn-secundario">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

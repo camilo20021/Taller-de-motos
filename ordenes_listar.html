@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block titulo %}Órdenes de servicio · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>Órdenes de servicio</h1>
+    <div class="subtexto">Control de ingreso y salida de motos del taller</div>
+  </div>
+  <a href="{{ url_for('ordenes.nueva') }}" class="btn btn-primario">+ Nueva orden</a>
+</div>
+
+<div class="filtros-estado">
+  <a href="{{ url_for('ordenes.listar') }}" class="{{ 'activo' if not estado }}">Todas</a>
+  {% for e in estados %}
+  <a href="{{ url_for('ordenes.listar', estado=e) }}" class="{{ 'activo' if estado == e }}">{{ e.replace('_',' ')|capitalize }}</a>
+  {% endfor %}
+</div>
+
+<div class="tarjeta">
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Moto</th>
+          <th>Cliente</th>
+          <th>Ingreso</th>
+          <th>Entrega estimada</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for orden in ordenes %}
+        <tr>
+          <td>{{ orden.id }}</td>
+          <td>{{ orden.moto.marca }} · {{ orden.moto.placa }}</td>
+          <td>{{ orden.cliente.nombre }}</td>
+          <td>{{ orden.fecha_ingreso.strftime('%d/%m/%Y') }}</td>
+          <td>{{ orden.fecha_entrega_estimada.strftime('%d/%m/%Y') if orden.fecha_entrega_estimada else '—' }}</td>
+          <td><span class="badge badge-{{ orden.estado }}">{{ orden.estado_label }}</span></td>
+          <td><a href="{{ url_for('ordenes.detalle', orden_id=orden.id) }}">Ver</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="vacio">No hay órdenes de servicio con este filtro.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

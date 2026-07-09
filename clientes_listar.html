@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block titulo %}Clientes · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>Clientes</h1>
+    <div class="subtexto">Clientes registrados y sus motos</div>
+  </div>
+  <a href="{{ url_for('clientes.nuevo') }}" class="btn btn-primario">+ Nuevo cliente</a>
+</div>
+
+<form class="busqueda-inline" method="GET">
+  <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre, cédula o celular...">
+  <button type="submit" class="btn btn-secundario">Buscar</button>
+</form>
+
+<div class="tarjeta">
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Cédula</th>
+          <th>Celular</th>
+          <th>Correo</th>
+          <th>Motos</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in clientes %}
+        <tr>
+          <td>{{ c.nombre }}</td>
+          <td>{{ c.cedula }}</td>
+          <td>{{ c.celular }}</td>
+          <td>{{ c.correo or '—' }}</td>
+          <td>{{ c.motos|length }}</td>
+          <td><a href="{{ url_for('clientes.detalle', cliente_id=c.id) }}">Ver</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="vacio">No hay clientes registrados todavía.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

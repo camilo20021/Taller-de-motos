@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titulo %}Nueva cuenta · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina">
+  <div>
+    <h1>Nueva cuenta de usuario</h1>
+    <div class="subtexto">Crea el acceso para un administrador o mecánico del taller.</div>
+  </div>
+</div>
+
+<div class="tarjeta" style="max-width:520px;">
+  <form method="POST">
+    <div class="form-grid">
+      <div class="campo ancho-completo">
+        <label for="nombre">Nombre completo *</label>
+        <input type="text" id="nombre" name="nombre" required>
+      </div>
+      <div class="campo ancho-completo">
+        <label for="correo">Correo *</label>
+        <input type="email" id="correo" name="correo" required>
+        <span class="ayuda">Con este correo iniciará sesión.</span>
+      </div>
+      <div class="campo">
+        <label for="password">Contraseña *</label>
+        <input type="password" id="password" name="password" required minlength="6">
+      </div>
+      <div class="campo">
+        <label for="rol">Rol *</label>
+        <select id="rol" name="rol">
+          <option value="mecanico">Mecánico</option>
+          <option value="admin">Administrador</option>
+        </select>
+        <span class="ayuda">El mecánico solo ve y gestiona clientes/motos/órdenes. El administrador tiene acceso completo.</span>
+      </div>
+    </div>
+
+    <div class="acciones-form">
+      <button type="submit" class="btn btn-primario">Crear cuenta</button>
+      <a href="{{ url_for('usuarios.listar') }}" class="btn btn-secundario">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

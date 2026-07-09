@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block titulo %}{{ documento.numero }} · Motos JL Racing{% endblock %}
+{% block contenido %}
+
+<div class="encabezado-pagina no-imprimir">
+  <div>
+    <h1>{{ 'Cotización' if documento.tipo == 'cotizacion' else 'Factura' }} {{ documento.numero }}</h1>
+  </div>
+  <div style="display:flex; gap:8px;">
+    {% if documento.estado == 'pendiente' %}
+    <form method="POST" action="{{ url_for('documentos.marcar_pagada', documento_id=documento.id) }}">
+      <button type="submit" class="btn btn-secundario">Marcar como pagada</button>
+    </form>
+    {% endif %}
+    <button onclick="window.print()" class="btn btn-primario">Imprimir</button>
+  </div>
+</div>
+
+<div class="tarjeta hoja-documento">
+  <div class="cabecera-doc">
+    <div>
+      <strong style="font-size:1.1rem;">{{ current_user.taller.nombre }}</strong><br>
+      {% if current_user.taller.nit %}NIT: {{ current_user.taller.nit }}<br>{% endif %}
+      {% if current_user.taller.direccion %}{{ current_user.taller.direccion }}<br>{% endif %}
+      {% if current_user.taller.telefono %}Tel: {{ current_user.taller.telefono }}{% endif %}
+    </div>
+    <div style="text-align:right;">
+      <strong>{{ 'COTIZACIÓN' if documento.tipo == 'cotizacion' else 'FACTURA' }}</strong><br>
+      N.º {{ documento.numero }}<br>
+      Fecha: {{ documento.fecha.strftime('%d/%m/%Y') }}<br>
+      <span class="badge badge-{{ documento.estado }}">{{ documento.estado|capitalize }}</span>
+    </div>
+  </div>
+
+  <p>
+    <strong>Cliente:</strong> {{ documento.orden.cliente.nombre }} — cédula {{ documento.orden.cliente.cedula }}<br>
+    <strong>Moto:</strong> {{ documento.orden.moto.marca }} {{ documento.orden.moto.modelo or '' }} — placa {{ documento.orden.moto.placa }}<br>
+    <strong>Orden de servicio:</strong> #{{ documento.orden.id }}
+  </p>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Descripción</th><th>Cantidad</th><th>Precio unit.</th><th>Subtotal</th></tr></thead>
+      <tbody>
+        {% for item in documento.orden.items_repuesto %}
+        <tr>
+          <td>{{ item.repuesto.nombre }}</td>
+          <td>{{ item.cantidad }}</td>
+          <td>${{ '{:,.0f}'.format(item.precio_unitario) }}</td>
+          <td>${{ '{:,.0f}'.format(item.subtotal) }}</td>
+        </tr>
+        {% endfor %}
+        {% for item in documento.orden.items_servicio %}
+        <tr>
+          <td>{{ item.descripcion }}</td>
+          <td>1</td>
+          <td>${{ '{:,.0f}'.format(item.precio) }}</td>
+          <td>${{ '{:,.0f}'.format(item.precio) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="totales" style="margin-top:16px;">
+    <div class="fila"><span>Subtotal</span><span>${{ '{:,.0f}'.format(documento.subtotal) }}</span></div>
+    <div class="fila"><span>IVA (19%)</span><span>${{ '{:,.0f}'.format(documento.iva) }}</span></div>
+    <div class="fila total"><span>Total</span><span>${{ '{:,.0f}'.format(documento.total) }}</span></div>
+  </div>
+</div>
+
+{% endblock %}
