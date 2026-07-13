@@ -492,14 +492,105 @@ tbody tr:hover {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
+  body.menu-abierto {
+    overflow: hidden;
+  }
+
+  .btn-menu-movil {
+    display: inline-flex;
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 1100;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--color-primario);
+    color: #fff;
+    box-shadow: var(--sombra);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.5);
+    z-index: 1000;
+  }
+
+  .overlay.activo {
+    display: block;
+  }
+
   .layout {
     flex-direction: column;
   }
+
   .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    bottom: 0;
+    width: 260px;
+    z-index: 1050;
+    transition: left 0.25s ease;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.22);
+  }
+
+  .sidebar.abierto {
+    left: 0;
+  }
+
+  .contenido {
+    padding: 72px 16px 24px;
     width: 100%;
   }
-  .contenido {
-    padding: 20px;
+
+  .encabezado-pagina {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .acciones-form {
+    flex-wrap: wrap;
+  }
+
+  .totales {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 14px;
+  }
+
+  .tabla-wrap {
+    overflow-x: auto;
+  }
+
+  table th,
+  table td {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-tarjeta {
+    padding: 24px 18px;
+  }
+
+  .rejilla-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .busqueda-inline {
+    flex-direction: column;
+  }
+
+  .busqueda-inline input {
+    min-width: 100%;
   }
 }

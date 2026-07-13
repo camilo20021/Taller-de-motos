@@ -32,4 +32,30 @@ document.addEventListener("DOMContentLoaded", function () {
       }, 400);
     }, 6000);
   });
+
+  // Menú lateral móvil
+  const btnMenuMovil = document.getElementById("btn-menu-movil");
+  const sidebar = document.getElementById("sidebar-principal");
+  const overlay = document.getElementById("overlay-menu");
+
+  if (btnMenuMovil && sidebar && overlay) {
+    const abrirCerrarMenu = function () {
+      const abierto = sidebar.classList.toggle("abierto");
+      overlay.classList.toggle("activo", abierto);
+      btnMenuMovil.setAttribute("aria-expanded", abierto ? "true" : "false");
+      document.body.classList.toggle("menu-abierto", abierto);
+    };
+
+    btnMenuMovil.addEventListener("click", abrirCerrarMenu);
+    overlay.addEventListener("click", abrirCerrarMenu);
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 900) {
+        sidebar.classList.remove("abierto");
+        overlay.classList.remove("activo");
+        btnMenuMovil.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("menu-abierto");
+      }
+    });
+  }
 });
